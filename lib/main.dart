@@ -58,12 +58,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     if (scrollInfo.metrics.axis == Axis.vertical) {
       _ColorAnimationController.animateTo(scrollInfo.metrics.pixels / 100);
 
-      print(
-          "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz${scrollInfo.metrics.pixels / 100}");
+
       _TextAnimationController.animateTo(scrollInfo.metrics.pixels);
       return scroll = true;
     }
-    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     return scroll;
   }
 
