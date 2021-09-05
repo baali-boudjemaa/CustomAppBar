@@ -1,117 +1,803 @@
+import 'dart:ui';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 
 void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
+  runApp(
+    MaterialApp(home: MyHomePage()),
+  );
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+  // ignore: non_constant_identifier_names
+  AnimationController _ColorAnimationController;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  // ignore: non_constant_identifier_names
+  AnimationController _TextAnimationController;
+  Animation _colorTween,
+      _homeTween,
+      _workOutTween,
+      _iconTween,
+      _drawerTween,
+      _growingAnimation;
+
+  @override
+  void initState() {
+    _ColorAnimationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 0));
+    _colorTween = ColorTween(begin: Colors.transparent, end: Colors.white)
+        .animate(_ColorAnimationController);
+    _growingAnimation = Tween(begin: 0.0, end: 105.0).animate(CurvedAnimation(
+        parent: _ColorAnimationController, curve: Curves.easeIn));
+    _iconTween =
+        ColorTween(begin: Colors.white, end: Colors.lightBlue.withOpacity(0.5))
+            .animate(_ColorAnimationController);
+    _drawerTween = ColorTween(begin: Colors.white, end: Colors.black)
+        .animate(_ColorAnimationController);
+    _homeTween = ColorTween(begin: Colors.black, end: Colors.red)
+        .animate(_ColorAnimationController);
+    _workOutTween = ColorTween(begin: Colors.white, end: Colors.green)
+        .animate(_ColorAnimationController);
+    _TextAnimationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 0));
+
+    super.initState();
+  }
+
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
+
+  bool scrollListener(ScrollNotification scrollInfo) {
+    bool scroll = false;
+    if (scrollInfo.metrics.axis == Axis.vertical) {
+      _ColorAnimationController.animateTo(scrollInfo.metrics.pixels / 100);
+
+      print(
+          "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz${scrollInfo.metrics.pixels / 100}");
+      _TextAnimationController.animateTo(scrollInfo.metrics.pixels);
+      return scroll = true;
+    }
+    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    return scroll;
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+      key: scaffoldKey,
+      drawer: Drawer(),
+      backgroundColor: Colors.lightBlue,
+      body: NotificationListener<ScrollNotification>(
+        onNotification: scrollListener,
+        child: Stack(
+          children: [
+            Container(
+              height: double.infinity,
+              color: Colors.lightBlue,
+              child: Stack(
+                children: <Widget>[
+                  SingleChildScrollView(
+                    child: Stack(
+                      children: <Widget>[
+                        Column(
+                          children: <Widget>[
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: Container(
+                                  color: Colors.red,
+                                )),
+                            SizedBox(
+                                height: 50,
+                                width: 200,
+                                child: Container(
+                                  color: Colors.lightBlue,
+                                )),
+
+                            //ADD_MORE_WIDGETS
+                          ],
+                        ),
+                        //ADD_MORE_WIDGETS
+                      ],
+                    ),
+                  ),
+                  AnimatedAppBar(
+                      drawerTween: _drawerTween,
+                      onPressed: () {
+                        scaffoldKey.currentState.openDrawer();
+                      },
+                      colorAnimationController: _ColorAnimationController,
+                      colorTween: _colorTween,
+                      homeTween: _homeTween,
+                      iconTween: _iconTween,
+                      workOutTween: _workOutTween,
+                      growingAnimation: _growingAnimation)
+                ],
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            //ADD_MORE_WIDGETS
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+}
+
+class AnimatedAppBar extends StatefulWidget implements PreferredSizeWidget {
+  AnimationController colorAnimationController;
+  Animation colorTween,
+      homeTween,
+      workOutTween,
+      iconTween,
+      drawerTween,
+      growingAnimation;
+  Function onPressed;
+  final double _preferredHeight = 90.0;
+
+  AnimatedAppBar(
+      {@required this.colorAnimationController,
+        @required this.onPressed,
+        @required this.colorTween,
+        @required this.homeTween,
+        @required this.iconTween,
+        @required this.drawerTween,
+        @required this.workOutTween,
+        @required this.growingAnimation});
+
+  @override
+  Size get preferredSize => Size.fromHeight(_preferredHeight);
+
+  @override
+  _AnimatedAppBar createState() => _AnimatedAppBar();
+}
+
+class _AnimatedAppBar extends State<AnimatedAppBar>
+    with SingleTickerProviderStateMixin {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 150,
+      child: AnimatedBuilder(
+        animation: widget.colorAnimationController,
+        builder: (context, child) =>
+            Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          bottomLeft:
+                          Radius.circular(widget.growingAnimation.value),
+                          bottomRight:
+                          Radius.circular(widget.growingAnimation.value)),
+                      color: Colors.tealAccent),
+                  child: AppBar(
+                    leading: IconButton(
+                      icon: Icon(
+                        Icons.dehaze,
+                        color: widget.drawerTween.value,
+                      ),
+                      onPressed: widget.onPressed,
+                    ),
+                    backgroundColor: Colors.orange,
+                    elevation: 0,
+                    titleSpacing: 0.0,
+                    title: Row(
+                      children: <Widget>[
+                        Text(
+                          "Hello  ",
+                          style: TextStyle(
+                              color: widget.homeTween.value,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              letterSpacing: 1),
+                        ),
+                        Text(
+                          'username',
+                          style: TextStyle(
+                              color: widget.workOutTween.value,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              letterSpacing: 1),
+                        ),
+                      ],
+                    ),
+                    actions: <Widget>[
+                      Icon(
+                        Icons.notifications,
+                        color: widget.iconTween.value,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(7),
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(
+                              'https://cdn.arstechnica.net/wp-content/uploads/2016/02/5718897981_10faa45ac3_b-640x624.jpg'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Stack(children: [
+                  CustomPaint(
+                      painter:
+                      MyPainter(sheight: widget.growingAnimation.value * 0.3),
+                      child: SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: widget.growingAnimation.value * 0.6)),
+
+                ])
+              ],
+            ),
+      ),
+    );
+  }
+}
+
+class MyPainter extends CustomPainter {
+  MyPainter({@required sheight});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint();
+    Path path = Path();
+
+    // Path number 1
+
+    paint.color = Colors.orange;
+    path = Path();
+    path.lineTo(size.width, size.height);
+    path.cubicTo(size.width, size.height, size.width, size.height, size.width,
+        size.height);
+    path.cubicTo(size.width, size.height * 0.73, size.width * 0.96,
+        size.height * 0.51, size.width * 0.92, size.height * 0.51);
+    path.cubicTo(size.width * 0.92, size.height * 0.51, size.width * 0.08,
+        size.height * 0.51, size.width * 0.08, size.height * 0.51);
+    path.cubicTo(size.width * 0.04, size.height * 0.51, 0, size.height * 0.73,
+        0, size.height);
+    path.cubicTo(0, size.height, 0, 0, 0, 0);
+    path.cubicTo(0, 0, size.width, 0, size.width, 0);
+    path.cubicTo(
+        size.width, 0, size.width, size.height, size.width, size.height);
+    path.cubicTo(size.width, size.height, size.width, size.height, size.width,
+        size.height);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
   }
 }
