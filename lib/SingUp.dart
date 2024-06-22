@@ -13,6 +13,7 @@ class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
+
 class MyPainter extends CustomPainter {
   MyPainter({@required sheight});
 
@@ -48,3 +49,4 @@ class MyPainter extends CustomPainter {
     return true;
   }
 }
+
