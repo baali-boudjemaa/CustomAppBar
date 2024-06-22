@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 
 void main() {
   runApp(
@@ -17,11 +16,11 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   // ignore: non_constant_identifier_names
-  AnimationController _ColorAnimationController;
+  late AnimationController _ColorAnimationController;
 
   // ignore: non_constant_identifier_names
-  AnimationController _TextAnimationController;
-  Animation _colorTween,
+  late AnimationController _TextAnimationController;
+  late Animation _colorTween,
       _homeTween,
       _workOutTween,
       _iconTween,
@@ -30,6 +29,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   @override
   void initState() {
+
+    
     _ColorAnimationController =
         AnimationController(vsync: this, duration: Duration(seconds: 0));
     _colorTween = ColorTween(begin: Colors.transparent, end: Colors.white)
@@ -636,7 +637,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   AnimatedAppBar(
                       drawerTween: _drawerTween,
                       onPressed: () {
-                        scaffoldKey.currentState.openDrawer();
+                        scaffoldKey.currentState!.openDrawer();
                       },
                       colorAnimationController: _ColorAnimationController,
                       colorTween: _colorTween,
@@ -663,18 +664,18 @@ class AnimatedAppBar extends StatefulWidget implements PreferredSizeWidget {
       iconTween,
       drawerTween,
       growingAnimation;
-  Function onPressed;
+     Function() onPressed;
   final double _preferredHeight = 90.0;
 
   AnimatedAppBar(
-      {@required this.colorAnimationController,
-        @required this.onPressed,
-        @required this.colorTween,
-        @required this.homeTween,
-        @required this.iconTween,
-        @required this.drawerTween,
-        @required this.workOutTween,
-        @required this.growingAnimation});
+      {required this.colorAnimationController,
+        required this.onPressed,
+        required this.colorTween,
+        required this.homeTween,
+        required this.iconTween,
+        required this.drawerTween,
+        required this.workOutTween,
+        required this.growingAnimation});
 
   @override
   Size get preferredSize => Size.fromHeight(_preferredHeight);
